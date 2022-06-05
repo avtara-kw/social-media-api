@@ -10,7 +10,7 @@ type Users struct {
 	Username  string
 	Email     string
 	Password  string
-	Age       string
+	Age       int
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
 }

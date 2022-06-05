@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/avtara-kw/social-media-api/app/config"
+	"github.com/avtara-kw/social-media-api/app/middleware"
 	users2 "github.com/avtara-kw/social-media-api/businesses/users"
 	users3 "github.com/avtara-kw/social-media-api/controllers/users"
 	"github.com/avtara-kw/social-media-api/repositories/databases/users"
@@ -42,6 +43,9 @@ func main() {
 		})
 	})
 	router.POST("/users", usersController.Registration)
+	router.POST("/users/login", usersController.Login)
+	router.Use(middleware.Auth())
+	router.DELETE("/users", usersController.Delete)
 
 	log.Println("server running at port ", port)
 	router.Run(port)
