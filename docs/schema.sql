@@ -1,13 +1,13 @@
 -- Social Media API
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS photos;
-DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS social_medias;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS photos;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE users(
     id INT GENERATED ALWAYS AS IDENTITY,
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     age INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -26,7 +26,7 @@ CREATE TABLE photos(
     PRIMARY KEY(id),
     CONSTRAINT fk_photo_user
         FOREIGN KEY(user_id)
-            REFERENCES users(id)
+            REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE comments(
@@ -39,21 +39,21 @@ CREATE TABLE comments(
     PRIMARY KEY(id),
     CONSTRAINT fk_comment_user
         FOREIGN KEY(user_id)
-            REFERENCES users(id),
+            REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_comment_photo
         FOREIGN KEY(photo_id)
-            REFERENCES photos(id)
+            REFERENCES photos(id) ON DELETE CASCADE
 );
 
 CREATE TABLE social_medias(
     id INT GENERATED ALWAYS AS IDENTITY,
     name VARCHAR(255) NOT NULL,
-     social_media_url VARCHAR(255) NOT NULL,
-     user_id INT NOT NULL,
-     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-     PRIMARY KEY(id),
-     CONSTRAINT fk_social_medias_user
-         FOREIGN KEY(user_id)
-             REFERENCES users(id)
+    social_media_url VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    CONSTRAINT fk_social_medias_user
+        FOREIGN KEY(user_id)
+            REFERENCES users(id) ON DELETE CASCADE
 );
