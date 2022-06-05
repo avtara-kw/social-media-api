@@ -55,3 +55,19 @@ DELETE FROM users WHERE id=$1;
 	}
 	return nil
 }
+
+func (ru *repoUsers) UpdateUsernameAndEmail(id, email, username string) (*users.Domain, error) {
+	var user Users
+	sqlStatement := `
+UPDATE users
+SET email = $2, username = $3, updated_at=current_timestamp
+WHERE id = $1 returning *;
+`
+	if err := ru.DB.QueryRow(sqlStatement, id, email, username).
+		Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Age, &user.CreatedAt, &user.UpdatedAt); err != nil {
+		return nil, err
+	}
+
+	result := toDomain(&user)
+	return result, nil
+}

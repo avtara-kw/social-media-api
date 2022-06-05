@@ -88,3 +88,33 @@ func (ctrl *UserController) Delete(ctx *gin.Context) {
 			utils.BuildResponse("Your account has been successfully deleted", map[string]string{"id": ID}))
 	}
 }
+
+func (ctrl *UserController) Update(ctx *gin.Context) {
+	var req RequestUserUpdate
+	ID := fmt.Sprintf("%.0f", ctx.MustGet("id").(float64))
+	if err := ctx.ShouldBindJSON(&req); err == nil {
+		res, err := ctrl.userService.Update(ID, req.ToDomain())
+		if err != nil {
+			if errors.Is(err, businesses.ErrEmailAccountDuplicate) || errors.Is(err, businesses.ErrEmailAccountDuplicate) {
+				ctx.JSON(http.StatusConflict,
+					utils.BuildErrorResponse("Data Duplicate",
+						err, utils.EmptyObj{}))
+			} else if errors.Is(err, businesses.ErrAccountNotFound) {
+				ctx.JSON(http.StatusNotFound,
+					utils.BuildErrorResponse("Account not found",
+						err, utils.EmptyObj{}))
+			} else {
+				ctx.JSON(http.StatusInternalServerError,
+					utils.BuildErrorResponse("Internal Server Error",
+						err, utils.EmptyObj{}))
+			}
+		} else {
+			ctx.JSON(http.StatusOK,
+				utils.BuildResponse("Successfully updated an account!",
+					ResponseUserUpdateFromDomain(res)))
+		}
+	} else {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.BuildErrorResponse(
+			"An error occurred while validating the request data", err, utils.EmptyObj{}))
+	}
+}

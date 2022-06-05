@@ -63,3 +63,22 @@ func (us *userService) Delete(ID string) error {
 
 	return nil
 }
+
+func (us *userService) Update(id string, userDomain *Domain) (*Domain, error) {
+	var err error
+
+	res, err := us.userRepository.UpdateUsernameAndEmail(id, userDomain.Email, userDomain.Username)
+	fmt.Println(err)
+	if err != nil {
+		if strings.Contains(err.Error(), "users_username_key") {
+			return nil, businesses.ErrUsernameAccountDuplicate
+		} else if strings.Contains(err.Error(), "users_email_key") {
+			return nil, businesses.ErrEmailAccountDuplicate
+		} else if strings.Contains(err.Error(), "no rows") {
+			return nil, businesses.ErrAccountNotFound
+		}
+		return nil, businesses.ErrInternalServer
+	}
+
+	return res, nil
+}

@@ -14,6 +14,11 @@ type RequestUserLogin struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type RequestUserUpdate struct {
+	Email    string `json:"email" binding:"required,email"`
+	Username string `json:"username" binding:"required"`
+}
+
 func (rec *RequestUserRegistration) ToDomain() *users.Domain {
 	return &users.Domain{
 		Age:      rec.Age,
@@ -27,5 +32,12 @@ func (rec *RequestUserLogin) ToDomain() *users.Domain {
 	return &users.Domain{
 		Email:    rec.Email,
 		Password: rec.Password,
+	}
+}
+
+func (rec *RequestUserUpdate) ToDomain() *users.Domain {
+	return &users.Domain{
+		Email:    rec.Email,
+		Username: rec.Username,
 	}
 }

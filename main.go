@@ -37,15 +37,21 @@ func main() {
 
 	port := ":" + os.Getenv("PORT")
 	router := gin.Default()
+
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
-	router.POST("/users", usersController.Registration)
-	router.POST("/users/login", usersController.Login)
-	router.Use(middleware.Auth())
-	router.DELETE("/users", usersController.Delete)
+
+	userRoute := router.Group("/users")
+	{
+		userRoute.POST("/", usersController.Registration)
+		userRoute.POST("/login", usersController.Login)
+		userRoute.Use(middleware.Auth())
+		userRoute.DELETE("/", usersController.Delete)
+		userRoute.PUT("/", usersController.Update)
+	}
 
 	log.Println("server running at port ", port)
 	router.Run(port)

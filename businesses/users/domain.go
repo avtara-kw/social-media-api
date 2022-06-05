@@ -17,10 +17,12 @@ type Service interface {
 	Registration(data *Domain) (*Domain, error)
 	Login(data *Domain) (*Domain, error)
 	Delete(ID string) error
+	Update(id string, data *Domain) (*Domain, error)
 }
 
 type Repository interface {
 	Store(data *Domain) (*Domain, error)
 	GetByEmail(email string) (*Domain, error)
 	DeleteByID(ID string) error
+	UpdateUsernameAndEmail(id, email, username string) (*Domain, error)
 }
