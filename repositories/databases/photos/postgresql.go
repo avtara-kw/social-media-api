@@ -31,6 +31,7 @@ VALUES ($1, $2, $3, $4) Returning *;
 	result := toDomain(photo)
 	return result, nil
 }
+
 func (ru *repoPhotos) GetAll() ([]photos.Domain, error) {
 	var result []photos.Domain
 	sqlStatement := `

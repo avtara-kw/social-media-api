@@ -45,7 +45,7 @@ func (us *photoService) Delete(photoID, userID int) error {
 		return businesses.ErrInternalServer
 	}
 
-	if res.UserID != photoID {
+	if res.UserID != userID {
 		return businesses.ErrForbiddenAccess
 	}
 
