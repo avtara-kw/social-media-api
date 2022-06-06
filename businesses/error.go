@@ -8,4 +8,6 @@ var (
 	ErrInvalidCredential        = errors.New("email or password does not match")
 	ErrUsernameAccountDuplicate = errors.New("username is already taken")
 	ErrAccountNotFound          = errors.New("account not found")
+	ErrDataNotFound             = errors.New("data not found")
+	ErrForbiddenAccess          = errors.New("forbidden Access")
 )

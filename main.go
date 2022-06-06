@@ -3,8 +3,11 @@ package main
 import (
 	"github.com/avtara-kw/social-media-api/app/config"
 	"github.com/avtara-kw/social-media-api/app/middleware"
+	photos2 "github.com/avtara-kw/social-media-api/businesses/photos"
 	users2 "github.com/avtara-kw/social-media-api/businesses/users"
+	photos3 "github.com/avtara-kw/social-media-api/controllers/photos"
 	users3 "github.com/avtara-kw/social-media-api/controllers/users"
+	"github.com/avtara-kw/social-media-api/repositories/databases/photos"
 	"github.com/avtara-kw/social-media-api/repositories/databases/users"
 	"github.com/avtara-kw/social-media-api/utils"
 	"github.com/gin-gonic/gin"
@@ -31,9 +34,13 @@ func main() {
 		v.RegisterValidation("password", utils.PasswordRule)
 	}
 
-	usersRepo := users.NewRepoMySQL(db)
+	usersRepo := users.NewRepoPostgresql(db)
 	usersService := users2.NewUserService(usersRepo)
 	usersController := users3.NewUserController(usersService)
+
+	photoRepo := photos.NewRepoPostgresql(db)
+	photoService := photos2.NewPhotosService(photoRepo)
+	photoController := photos3.NewPhotosController(photoService)
 
 	port := ":" + os.Getenv("PORT")
 	router := gin.Default()
@@ -51,6 +58,15 @@ func main() {
 		userRoute.Use(middleware.Auth())
 		userRoute.DELETE("/", usersController.Delete)
 		userRoute.PUT("/", usersController.Update)
+	}
+
+	photoRoute := router.Group("/photos")
+	{
+		photoRoute.Use(middleware.Auth())
+		photoRoute.POST("/", photoController.Post)
+		photoRoute.GET("/", photoController.GetAll)
+		photoRoute.DELETE("/:id", photoController.Delete)
+		photoRoute.PUT("/:id", photoController.Update)
 	}
 
 	log.Println("server running at port ", port)

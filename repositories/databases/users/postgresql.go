@@ -9,7 +9,7 @@ type repoUsers struct {
 	DB *sql.DB
 }
 
-func NewRepoMySQL(db *sql.DB) users.Repository {
+func NewRepoPostgresql(db *sql.DB) users.Repository {
 	return &repoUsers{
 		DB: db,
 	}
