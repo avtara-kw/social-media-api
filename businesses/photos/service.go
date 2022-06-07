@@ -1,7 +1,6 @@
 package photos
 
 import (
-	"fmt"
 	"github.com/avtara-kw/social-media-api/businesses"
 	"strings"
 )
@@ -19,7 +18,6 @@ func NewPhotosService(rep Repository) Service {
 func (us *photoService) Post(photoDomain *Domain) (*Domain, error) {
 	res, err := us.photoRepository.Store(photoDomain)
 	if err != nil {
-		fmt.Println(err)
 		return nil, businesses.ErrInternalServer
 	}
 

@@ -10,4 +10,5 @@ var (
 	ErrAccountNotFound          = errors.New("account not found")
 	ErrDataNotFound             = errors.New("data not found")
 	ErrForbiddenAccess          = errors.New("forbidden Access")
+	ErrPhotoNotFound            = errors.New("photo not found")
 )

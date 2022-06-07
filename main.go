@@ -3,12 +3,15 @@ package main
 import (
 	"github.com/avtara-kw/social-media-api/app/config"
 	"github.com/avtara-kw/social-media-api/app/middleware"
+	comments2 "github.com/avtara-kw/social-media-api/businesses/comments"
 	photos2 "github.com/avtara-kw/social-media-api/businesses/photos"
 	social_medias2 "github.com/avtara-kw/social-media-api/businesses/social_medias"
 	users2 "github.com/avtara-kw/social-media-api/businesses/users"
+	comments3 "github.com/avtara-kw/social-media-api/controllers/comments"
 	photos3 "github.com/avtara-kw/social-media-api/controllers/photos"
 	social_medias3 "github.com/avtara-kw/social-media-api/controllers/social_medias"
 	users3 "github.com/avtara-kw/social-media-api/controllers/users"
+	"github.com/avtara-kw/social-media-api/repositories/databases/comments"
 	"github.com/avtara-kw/social-media-api/repositories/databases/photos"
 	"github.com/avtara-kw/social-media-api/repositories/databases/social_medias"
 	"github.com/avtara-kw/social-media-api/repositories/databases/users"
@@ -49,6 +52,10 @@ func main() {
 	socialMediaService := social_medias2.NewSocialMediasService(socialMediaRepo)
 	socialMediaController := social_medias3.NewSocialMediasController(socialMediaService)
 
+	commentRepo := comments.NewRepoPostgresql(db)
+	commentService := comments2.NewCommentsService(commentRepo)
+	commentController := comments3.NewCommentsController(commentService)
+
 	port := ":" + os.Getenv("PORT")
 	router := gin.Default()
 
@@ -83,6 +90,15 @@ func main() {
 		socialMediaRoute.GET("/", socialMediaController.GetAll)
 		socialMediaRoute.DELETE("/:id", socialMediaController.Delete)
 		socialMediaRoute.PUT("/:id", socialMediaController.Update)
+	}
+
+	commentRoute := router.Group("/comments")
+	{
+		commentRoute.Use(middleware.Auth())
+		commentRoute.POST("/", commentController.Post)
+		commentRoute.GET("/", commentController.GetAll)
+		commentRoute.DELETE("/:id", commentController.Delete)
+		commentRoute.PUT("/:id", commentController.Update)
 	}
 
 	log.Println("server running at port ", port)
